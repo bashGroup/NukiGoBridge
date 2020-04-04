@@ -1,6 +1,6 @@
 # NukiGoBridge - A nuki bridge implemented in golang
 
-## Sponsoring
+## Support me
 
 - Buy me a coffee: https://www.paypal.me/JochenScheib
 - Buy me a present: https://www.amazon.de/hz/wishlist/ls/2ORJGSSLEQDED?ref_=wl_share
