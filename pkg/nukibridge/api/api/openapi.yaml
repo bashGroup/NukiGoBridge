@@ -1,0 +1,925 @@
+openapi: 3.0.1
+info:
+  description: Keyturner api
+  title: Keyturner api
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- description: The official api of the nuki bridge
+  name: official
+- description: The inofficial api
+  name: inofficial
+paths:
+  /auth:
+    get:
+      description: |
+        Enables the api (if not yet enabled) and returns the api token. If no api
+        token has yet been set, a new (random) one is generated.
+        When issuing this API-call the bridge turns on its LED for 30 seconds.
+        The button of the bridge has to be pressed within this timeframe.
+        Otherwise the bridge returns a negative success and no token
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auth'
+          description: JSON list containing the success of the authorization
+      tags:
+      - official
+  /configAuth:
+    get:
+      description: |
+        Enables or disables the authorization via /auth and the publication of
+        the local IP and port to the discovery URL
+        (https://sse0.nuki.io/discover/bridges).
+      parameters:
+      - explode: true
+        in: query
+        name: enable
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+          description: JSON list containing the success of the operation
+      tags:
+      - official
+  /list:
+    get:
+      description: Returns a list of all paired Smart Locks
+      parameters:
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NukiLocks'
+          description: JSON array. One item of the following per Smart Lock
+      tags:
+      - official
+  /lockState:
+    get:
+      description: |
+        Usage Retrieves and returns the current lock state of a given Smart Lock
+      parameters:
+      - explode: true
+        in: query
+        name: nukiId
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NukiLockState'
+          description: JSON list containing the retrieved lock state
+      tags:
+      - official
+  /lockAction:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: nukiId
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: action
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: noWait
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockAction'
+          description: JSON list containing the retrieved lock state
+      summary: Performs a lock operation on the given Smart Lock
+      tags:
+      - official
+  /callback/add:
+    get:
+      parameters:
+      - description: The callback url to be added (no https, url encoded, max. 254
+          chars)
+        explode: true
+        in: query
+        name: url
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+          description: JSON list containing the result
+      summary: Registers a new callback url
+      tags:
+      - official
+  /callback/list:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Callbacks'
+          description: JSON list with the result
+      summary: Returns all registered url callbacks
+      tags:
+      - official
+  /callback/remove:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: id
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+          description: JSON list containing the result
+      summary: Removes a previously added callback
+      tags:
+      - official
+  /locks:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Lock'
+                type: array
+          description: List of locks
+      summary: Returns a list of linked locks
+      tags:
+      - inofficial
+  /locks/{id}:
+    delete:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "204":
+          description: Success
+      summary: Update a linked lock
+      tags:
+      - inofficial
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lock'
+          description: Configuration of the lock
+      summary: Returns a linked lock
+      tags:
+      - inofficial
+    put:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Lock'
+      responses:
+        "204":
+          description: Success
+      summary: Update a linked lock
+      tags:
+      - inofficial
+  /locks/{id}/config:
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockConfig'
+          description: Configuration of the lock
+      summary: Returns the configuration of the lock
+      tags:
+      - inofficial
+  /locks/{id}/history:
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: count
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/LogEntry'
+                type: array
+          description: History of log entries
+      summary: Returns the history of log action
+      tags:
+      - inofficial
+  /locks/{id}/currentState:
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockState'
+          description: Returns the current state
+      summary: Returns the current state of the keyturner
+      tags:
+      - inofficial
+  /locks/{id}/lastState:
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LockState'
+          description: Returns the last state
+      summary: Returns the last state of the keyturner without creating a connection
+      tags:
+      - inofficial
+  /bridge/config:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BridgeConfig'
+          description: Current configuration
+      summary: Read the current bridge configuration
+      tags:
+      - inofficial
+    put:
+      parameters:
+      - explode: true
+        in: query
+        name: token
+        required: false
+        schema:
+          type: string
+        style: form
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BridgeConfig'
+      responses:
+        "204":
+          description: Success
+      summary: Update the current bridge configuration
+      tags:
+      - inofficial
+components:
+  parameters:
+    idPath:
+      explode: false
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+      style: simple
+    nukiId:
+      explode: true
+      in: query
+      name: nukiId
+      required: false
+      schema:
+        type: string
+      style: form
+    token:
+      explode: true
+      in: query
+      name: token
+      required: false
+      schema:
+        type: string
+      style: form
+    action:
+      explode: true
+      in: query
+      name: action
+      required: false
+      schema:
+        type: string
+      style: form
+    noWait:
+      explode: true
+      in: query
+      name: noWait
+      required: false
+      schema:
+        type: string
+      style: form
+    enable:
+      explode: true
+      in: query
+      name: enable
+      required: false
+      schema:
+        type: string
+      style: form
+    offset:
+      explode: true
+      in: query
+      name: offset
+      required: false
+      schema:
+        type: string
+      style: form
+    count:
+      explode: true
+      in: query
+      name: count
+      required: false
+      schema:
+        type: string
+      style: form
+    url:
+      description: The callback url to be added (no https, url encoded, max. 254 chars)
+      explode: true
+      in: query
+      name: url
+      required: false
+      schema:
+        type: string
+      style: form
+    id:
+      explode: true
+      in: query
+      name: id
+      required: false
+      schema:
+        type: string
+      style: form
+  schemas:
+    Auth:
+      example:
+        success: true
+        token: token
+      properties:
+        token:
+          type: string
+        success:
+          type: boolean
+      type: object
+    LastLockState:
+      example:
+        stateName: stateName
+        state: 6
+        batteryCritical: true
+        timestamp: timestamp
+      properties:
+        state:
+          type: integer
+        stateName:
+          type: string
+        batteryCritical:
+          type: boolean
+        timestamp:
+          type: string
+      required:
+      - batteryCritical
+      - state
+      - stateName
+      - timestamp
+      type: object
+    NukiLock:
+      example:
+        lastKnownState:
+          stateName: stateName
+          state: 6
+          batteryCritical: true
+          timestamp: timestamp
+        nukiId: 0
+        name: name
+      properties:
+        nukiId:
+          type: integer
+        name:
+          type: string
+        lastKnownState:
+          $ref: '#/components/schemas/LastLockState'
+      type: object
+    NukiLocks:
+      items:
+        $ref: '#/components/schemas/NukiLock'
+      type: array
+    NukiLockState:
+      example:
+        stateName: stateName
+        success: true
+        state: 0
+        batteryCritical: true
+      properties:
+        state:
+          type: integer
+        stateName:
+          type: string
+        batteryCritical:
+          type: boolean
+        success:
+          type: boolean
+      type: object
+    LockAction:
+      example:
+        success: true
+        batteryCritical: true
+      properties:
+        success:
+          type: boolean
+        batteryCritical:
+          type: boolean
+      type: object
+    SimpleResponse:
+      example:
+        success: true
+        message: message
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      type: object
+    ScanResult:
+      properties:
+        nukiId:
+          type: integer
+        name:
+          type: string
+        rssi:
+          type: integer
+        paired:
+          type: boolean
+      type: object
+    CallbackObject:
+      properties:
+        nukiId:
+          type: integer
+        deviceType:
+          type: integer
+        mode:
+          type: integer
+        state:
+          type: integer
+        stateName:
+          type: string
+        batteryCritical:
+          type: boolean
+      type: object
+    Callback:
+      example:
+        id: 0
+        url: url
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+      type: object
+    Callbacks:
+      example:
+        callbacks:
+        - id: 0
+          url: url
+        - id: 0
+          url: url
+      properties:
+        callbacks:
+          items:
+            $ref: '#/components/schemas/Callback'
+          type: array
+      type: object
+    Info:
+      properties:
+        bridgeType:
+          type: integer
+        ids:
+          $ref: '#/components/schemas/Info_ids'
+        versions:
+          $ref: '#/components/schemas/Info_versions'
+        uptime:
+          type: integer
+        currentTime:
+          type: string
+        serverConnected:
+          type: boolean
+        scanResults:
+          items:
+            $ref: '#/components/schemas/ScanResult'
+          type: array
+      type: object
+    Lock:
+      example:
+        address: address
+        pin: 0
+        name: name
+        id: id
+      properties:
+        id:
+          nullable: true
+          readOnly: true
+          type: string
+        address:
+          nullable: true
+          readOnly: true
+          type: string
+        name:
+          nullable: true
+          readOnly: true
+          type: string
+        pin:
+          nullable: true
+          type: integer
+          writeOnly: true
+      type: object
+    LockState:
+      example:
+        currentTime: currentTime
+        lastLockActionCompletionStatus: 9
+        doorSensorState: 3
+        timezoneOffset: 5.962133916683182
+        lastLockAction: 2
+        configUpdateCount: 5
+        lastLockActionTrigger: 7
+        locknGoTimer: true
+        trigger: 1
+        nukiState: 0
+        criticalBatteryState: true
+        lockState: 6
+      properties:
+        nukiState:
+          type: integer
+        lockState:
+          type: integer
+        trigger:
+          type: integer
+        currentTime:
+          type: string
+        timezoneOffset:
+          type: number
+        criticalBatteryState:
+          type: boolean
+        configUpdateCount:
+          type: integer
+        locknGoTimer:
+          type: boolean
+        lastLockAction:
+          type: integer
+        lastLockActionTrigger:
+          type: integer
+        lastLockActionCompletionStatus:
+          type: integer
+        doorSensorState:
+          type: integer
+      type: object
+    LockConfig:
+      example:
+        hasKeypad: true
+        homeKitStatus: 3
+        singleLock: true
+        advertisingMode: 9
+        longitute: 6.027456183070403
+        ledEnabled: true
+        pairingEnabled: true
+        timezoneOffset: 5
+        hardwareRevision: hardwareRevision
+        latitute: 0.8008281904610115
+        nukiId: nukiId
+        name: name
+        fobAction2: 2
+        buttonEnabled: true
+        fobAction1: 5
+        timezoneId: 2
+        ledBrightness: 1
+        dstMode: true
+        hasFob: true
+        firmwareVersion: firmwareVersion
+        autoUnlatch: true
+        fobAction3: 7
+      properties:
+        nukiId:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        latitute:
+          nullable: true
+          type: number
+        longitute:
+          nullable: true
+          type: number
+        autoUnlatch:
+          nullable: true
+          type: boolean
+        pairingEnabled:
+          nullable: true
+          type: boolean
+        buttonEnabled:
+          nullable: true
+          type: boolean
+        ledEnabled:
+          nullable: true
+          type: boolean
+        ledBrightness:
+          nullable: true
+          type: integer
+        timezoneOffset:
+          nullable: true
+          type: integer
+        dstMode:
+          nullable: true
+          type: boolean
+        hasFob:
+          nullable: true
+          type: boolean
+        fobAction1:
+          nullable: true
+          type: integer
+        fobAction2:
+          nullable: true
+          type: integer
+        fobAction3:
+          nullable: true
+          type: integer
+        singleLock:
+          nullable: true
+          type: boolean
+        advertisingMode:
+          nullable: true
+          type: integer
+        hasKeypad:
+          nullable: true
+          type: boolean
+        firmwareVersion:
+          nullable: true
+          type: string
+        hardwareRevision:
+          nullable: true
+          type: string
+        homeKitStatus:
+          nullable: true
+          type: integer
+        timezoneId:
+          nullable: true
+          type: integer
+      type: object
+    LogEntry:
+      example:
+        name: name
+        index: 0
+        details: '{}'
+        type: 6
+        authId: authId
+        timestamp: timestamp
+      properties:
+        index:
+          type: integer
+        timestamp:
+          type: string
+        authId:
+          type: string
+        name:
+          type: string
+        type:
+          type: integer
+        details:
+          type: object
+      type: object
+    BridgeConfig:
+      example:
+        pairingEnabled: true
+      properties:
+        pairingEnabled:
+          nullable: true
+          type: boolean
+      type: object
+    Info_ids:
+      properties:
+        hardwareId:
+          type: string
+        serverId:
+          type: string
+    Info_versions:
+      properties:
+        firmwareVersion:
+          type: string
+        wifiFirmwareVersion:
+          type: string

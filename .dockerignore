@@ -1,0 +1,7 @@
+/assets
+**/.*
+bridge.json
+Dockerfile
+monitor
+nukibridge
+scanner
