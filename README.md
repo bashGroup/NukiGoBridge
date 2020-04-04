@@ -1,9 +1,23 @@
 # NukiGoBridge - A nuki bridge implemented in golang
 
+## Features
+
+- Replication of the most important official apis
+- Extended api to get more control over your locks
+- Server-sent event api to receive notifications on state changes
+- dockerized
+- swagger ui to test and play around with the api
+
+## Planed features
+
+- Implementation of more apis
+- More granular api access using jwt
+- Simple web ui to manage your locks
+
 ## Support me
 
 - Buy me a coffee: https://www.paypal.me/JochenScheib
-- Buy me a present: https://www.amazon.de/hz/wishlist/ls/2ORJGSSLEQDED?ref_=wl_share
+- Buy me a gift: https://www.amazon.de/hz/wishlist/ls/2ORJGSSLEQDED?ref_=wl_share
 
 ## Usage
 
