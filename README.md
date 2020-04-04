@@ -51,7 +51,7 @@ The api documentation can be viewed and tested after the bridge runs under `http
 
 ### ToDo
 
-- [ ] Automated builds
+- [x] Automated builds
 - [ ] Better api access using jwt token
 - [ ] Extend api by more functionality
 - [ ] Support nuki opener (needs sponsoring)
