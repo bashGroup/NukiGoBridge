@@ -15,13 +15,13 @@ For more information why that is needed see: https://lore.kernel.org/patchwork/p
  #### Volumes
 
  Volume | Description
- - | -
+ -------|------------
  /config | Persistant storage for configuration
 
  #### Environment variables
 
  Variable | Default | Description
- - | - |-
+ ---------|---------|------------
  NUKI_TOKEN | generated during start | Used to authenticate api calls, if not set token will be generated on each restart
  NUKI_CONFIGPATH | /config | Used to store the configuration file, including paired locks
  PORT | 8080 | HTTP server port for api
