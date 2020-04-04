@@ -29,14 +29,14 @@ For more information why that is needed see: https://lore.kernel.org/patchwork/p
  #### Example Usage
 
  ```
- docker run --name nukibridge -e NUKI_TOKEN=secret1234 -v /mnt/storage/nukibridge-config:/config --rm --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host nukibridge
+ docker run --name nukibridge -e NUKI_TOKEN=secret1234 -v /mnt/storage/nukibridge-config:/config --rm --cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host bashgroup/nukigobridge
  ```
 - `--name nukibridge`: Giving the container a name
 - `-e NUKI_TOKEN=secret1234`: Setting the token to access the api
 - `-v /mnt/storage/nukibridge-config:/config`: Mount persistant storage as volume
 - `--rm`: Delete container when stopped
 - `--cap-add=SYS_ADMIN --cap-add=NET_ADMIN --net=host`: Needed for bluetooth
-- `bashgroup/nukibridge:latest`: The image
+- `bashgroup/nukigobridge:latest`: The image
 
 ### API
 
@@ -48,6 +48,13 @@ The bridge provides an api vi http. It is splitted into two parts
 For details see *assets/doc*
 
 The api documentation can be viewed and tested after the bridge runs under `http://<ip>:8080/doc` using swagger ui.
+
+### ToDo
+
+- [ ] Automated builds
+- [ ] Better api access using jwt token
+- [ ] Extend api by more functionality
+- [ ] Support nuki opener (needs sponsoring)
 
 ## License
 
