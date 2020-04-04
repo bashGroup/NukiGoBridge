@@ -24,57 +24,43 @@ func NewOfficialApiService() OfficialApiServicer {
 	return &OfficialApiService{}
 }
 
-// AuthGet - 
-func (s *OfficialApiService) AuthGet() (interface{}, error) {
-	// TODO - update AuthGet with the required logic for this service method.
-	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'AuthGet' not implemented")
-}
-
 // CallbackAddGet - Registers a new callback url
-func (s *OfficialApiService) CallbackAddGet(url string, token string) (interface{}, error) {
+func (s *OfficialApiService) CallbackAddGet(url string) (interface{}, error) {
 	// TODO - update CallbackAddGet with the required logic for this service method.
 	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'CallbackAddGet' not implemented")
 }
 
 // CallbackListGet - Returns all registered url callbacks
-func (s *OfficialApiService) CallbackListGet(token string) (interface{}, error) {
+func (s *OfficialApiService) CallbackListGet() (interface{}, error) {
 	// TODO - update CallbackListGet with the required logic for this service method.
 	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'CallbackListGet' not implemented")
 }
 
 // CallbackRemoveGet - Removes a previously added callback
-func (s *OfficialApiService) CallbackRemoveGet(id string, token string) (interface{}, error) {
+func (s *OfficialApiService) CallbackRemoveGet(id string) (interface{}, error) {
 	// TODO - update CallbackRemoveGet with the required logic for this service method.
 	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'CallbackRemoveGet' not implemented")
 }
 
-// ConfigAuthGet - 
-func (s *OfficialApiService) ConfigAuthGet(enable string, token string) (interface{}, error) {
-	// TODO - update ConfigAuthGet with the required logic for this service method.
-	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-	return nil, errors.New("service method 'ConfigAuthGet' not implemented")
-}
-
 // ListGet - 
-func (s *OfficialApiService) ListGet(token string) (interface{}, error) {
+func (s *OfficialApiService) ListGet() (interface{}, error) {
 	// TODO - update ListGet with the required logic for this service method.
 	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'ListGet' not implemented")
 }
 
 // LockActionGet - Performs a lock operation on the given Smart Lock
-func (s *OfficialApiService) LockActionGet(nukiId string, action string, noWait string, token string) (interface{}, error) {
+func (s *OfficialApiService) LockActionGet(nukiId string, action string, noWait string) (interface{}, error) {
 	// TODO - update LockActionGet with the required logic for this service method.
 	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'LockActionGet' not implemented")
 }
 
 // LockStateGet - 
-func (s *OfficialApiService) LockStateGet(nukiId string, token string) (interface{}, error) {
+func (s *OfficialApiService) LockStateGet(nukiId string) (interface{}, error) {
 	// TODO - update LockStateGet with the required logic for this service method.
 	// Add api_official_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 	return nil, errors.New("service method 'LockStateGet' not implemented")

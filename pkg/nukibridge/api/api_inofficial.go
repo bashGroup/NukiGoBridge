@@ -95,9 +95,7 @@ func (c *InofficialApiController) Routes() Routes {
 
 // BridgeConfigGet - Read the current bridge configuration
 func (c *InofficialApiController) BridgeConfigGet(w http.ResponseWriter, r *http.Request) { 
-	query := r.URL.Query()
-	token := query.Get("token")
-	result, err := c.service.BridgeConfigGet(token)
+	result, err := c.service.BridgeConfigGet()
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -108,15 +106,13 @@ func (c *InofficialApiController) BridgeConfigGet(w http.ResponseWriter, r *http
 
 // BridgeConfigPut - Update the current bridge configuration
 func (c *InofficialApiController) BridgeConfigPut(w http.ResponseWriter, r *http.Request) { 
-	query := r.URL.Query()
-	token := query.Get("token")
 	bridgeConfig := &BridgeConfig{}
 	if err := json.NewDecoder(r.Body).Decode(&bridgeConfig); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.BridgeConfigPut(token, *bridgeConfig)
+	result, err := c.service.BridgeConfigPut(*bridgeConfig)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -127,9 +123,7 @@ func (c *InofficialApiController) BridgeConfigPut(w http.ResponseWriter, r *http
 
 // LocksGet - Returns a list of linked locks
 func (c *InofficialApiController) LocksGet(w http.ResponseWriter, r *http.Request) { 
-	query := r.URL.Query()
-	token := query.Get("token")
-	result, err := c.service.LocksGet(token)
+	result, err := c.service.LocksGet()
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -141,10 +135,8 @@ func (c *InofficialApiController) LocksGet(w http.ResponseWriter, r *http.Reques
 // LocksIdConfigGet - Returns the configuration of the lock
 func (c *InofficialApiController) LocksIdConfigGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	query := r.URL.Query()
 	id := params["id"]
-	token := query.Get("token")
-	result, err := c.service.LocksIdConfigGet(id, token)
+	result, err := c.service.LocksIdConfigGet(id)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -156,10 +148,8 @@ func (c *InofficialApiController) LocksIdConfigGet(w http.ResponseWriter, r *htt
 // LocksIdCurrentStateGet - Returns the current state of the keyturner
 func (c *InofficialApiController) LocksIdCurrentStateGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	query := r.URL.Query()
 	id := params["id"]
-	token := query.Get("token")
-	result, err := c.service.LocksIdCurrentStateGet(id, token)
+	result, err := c.service.LocksIdCurrentStateGet(id)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -171,10 +161,8 @@ func (c *InofficialApiController) LocksIdCurrentStateGet(w http.ResponseWriter, 
 // LocksIdDelete - Update a linked lock
 func (c *InofficialApiController) LocksIdDelete(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	query := r.URL.Query()
 	id := params["id"]
-	token := query.Get("token")
-	result, err := c.service.LocksIdDelete(id, token)
+	result, err := c.service.LocksIdDelete(id)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -186,10 +174,8 @@ func (c *InofficialApiController) LocksIdDelete(w http.ResponseWriter, r *http.R
 // LocksIdGet - Returns a linked lock
 func (c *InofficialApiController) LocksIdGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	query := r.URL.Query()
 	id := params["id"]
-	token := query.Get("token")
-	result, err := c.service.LocksIdGet(id, token)
+	result, err := c.service.LocksIdGet(id)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -203,10 +189,9 @@ func (c *InofficialApiController) LocksIdHistoryGet(w http.ResponseWriter, r *ht
 	params := mux.Vars(r)
 	query := r.URL.Query()
 	id := params["id"]
-	token := query.Get("token")
 	offset := query.Get("offset")
 	count := query.Get("count")
-	result, err := c.service.LocksIdHistoryGet(id, token, offset, count)
+	result, err := c.service.LocksIdHistoryGet(id, offset, count)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -218,10 +203,8 @@ func (c *InofficialApiController) LocksIdHistoryGet(w http.ResponseWriter, r *ht
 // LocksIdLastStateGet - Returns the last state of the keyturner without creating a connection
 func (c *InofficialApiController) LocksIdLastStateGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	query := r.URL.Query()
 	id := params["id"]
-	token := query.Get("token")
-	result, err := c.service.LocksIdLastStateGet(id, token)
+	result, err := c.service.LocksIdLastStateGet(id)
 	if err != nil {
 		w.WriteHeader(500)
 		return
@@ -233,16 +216,14 @@ func (c *InofficialApiController) LocksIdLastStateGet(w http.ResponseWriter, r *
 // LocksIdPut - Update a linked lock
 func (c *InofficialApiController) LocksIdPut(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	query := r.URL.Query()
 	id := params["id"]
-	token := query.Get("token")
 	lock := &Lock{}
 	if err := json.NewDecoder(r.Body).Decode(&lock); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.LocksIdPut(id, token, *lock)
+	result, err := c.service.LocksIdPut(id, *lock)
 	if err != nil {
 		w.WriteHeader(500)
 		return

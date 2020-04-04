@@ -5,70 +5,17 @@ info:
   version: 1.0.0
 servers:
 - url: /
+security:
+- TokenAuth: []
 tags:
 - description: The official api of the nuki bridge
   name: official
 - description: The inofficial api
   name: inofficial
 paths:
-  /auth:
-    get:
-      description: |
-        Enables the api (if not yet enabled) and returns the api token. If no api
-        token has yet been set, a new (random) one is generated.
-        When issuing this API-call the bridge turns on its LED for 30 seconds.
-        The button of the bridge has to be pressed within this timeframe.
-        Otherwise the bridge returns a negative success and no token
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Auth'
-          description: JSON list containing the success of the authorization
-      tags:
-      - official
-  /configAuth:
-    get:
-      description: |
-        Enables or disables the authorization via /auth and the publication of
-        the local IP and port to the discovery URL
-        (https://sse0.nuki.io/discover/bridges).
-      parameters:
-      - explode: true
-        in: query
-        name: enable
-        required: false
-        schema:
-          type: string
-        style: form
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SimpleResponse'
-          description: JSON list containing the success of the operation
-      tags:
-      - official
   /list:
     get:
       description: Returns a list of all paired Smart Locks
-      parameters:
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -86,13 +33,6 @@ paths:
       - explode: true
         in: query
         name: nukiId
-        required: false
-        schema:
-          type: string
-        style: form
-      - explode: true
-        in: query
-        name: token
         required: false
         schema:
           type: string
@@ -130,13 +70,6 @@ paths:
         schema:
           type: string
         style: form
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -159,13 +92,6 @@ paths:
         schema:
           type: string
         style: form
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -178,14 +104,6 @@ paths:
       - official
   /callback/list:
     get:
-      parameters:
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -206,13 +124,6 @@ paths:
         schema:
           type: string
         style: form
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -225,14 +136,6 @@ paths:
       - official
   /locks:
     get:
-      parameters:
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -255,13 +158,6 @@ paths:
         schema:
           type: string
         style: simple
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "204":
           description: Success
@@ -277,13 +173,6 @@ paths:
         schema:
           type: string
         style: simple
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -303,13 +192,6 @@ paths:
         schema:
           type: string
         style: simple
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       requestBody:
         content:
           application/json:
@@ -331,13 +213,6 @@ paths:
         schema:
           type: string
         style: simple
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -358,13 +233,6 @@ paths:
         schema:
           type: string
         style: simple
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       - explode: true
         in: query
         name: offset
@@ -401,13 +269,6 @@ paths:
         schema:
           type: string
         style: simple
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -428,13 +289,6 @@ paths:
         schema:
           type: string
         style: simple
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -447,14 +301,6 @@ paths:
       - inofficial
   /bridge/config:
     get:
-      parameters:
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       responses:
         "200":
           content:
@@ -466,14 +312,6 @@ paths:
       tags:
       - inofficial
     put:
-      parameters:
-      - explode: true
-        in: query
-        name: token
-        required: false
-        schema:
-          type: string
-        style: form
       requestBody:
         content:
           application/json:
@@ -570,9 +408,6 @@ components:
       style: form
   schemas:
     Auth:
-      example:
-        success: true
-        token: token
       properties:
         token:
           type: string
@@ -923,3 +758,8 @@ components:
           type: string
         wifiFirmwareVersion:
           type: string
+  securitySchemes:
+    TokenAuth:
+      in: query
+      name: token
+      type: apiKey

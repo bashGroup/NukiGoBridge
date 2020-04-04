@@ -33,11 +33,9 @@ type InofficialApiRouter interface {
 // The OfficialApiRouter implementation should parse necessary information from the http request, 
 // pass the data to a OfficialApiServicer to perform the required actions, then write the service results to the http response.
 type OfficialApiRouter interface { 
-	AuthGet(http.ResponseWriter, *http.Request)
 	CallbackAddGet(http.ResponseWriter, *http.Request)
 	CallbackListGet(http.ResponseWriter, *http.Request)
 	CallbackRemoveGet(http.ResponseWriter, *http.Request)
-	ConfigAuthGet(http.ResponseWriter, *http.Request)
 	ListGet(http.ResponseWriter, *http.Request)
 	LockActionGet(http.ResponseWriter, *http.Request)
 	LockStateGet(http.ResponseWriter, *http.Request)
@@ -49,16 +47,16 @@ type OfficialApiRouter interface {
 // while the service implementation can ignored with the .openapi-generator-ignore file 
 // and updated with the logic required for the API.
 type InofficialApiServicer interface { 
-	BridgeConfigGet(string) (interface{}, error)
-	BridgeConfigPut(string, BridgeConfig) (interface{}, error)
-	LocksGet(string) (interface{}, error)
-	LocksIdConfigGet(string, string) (interface{}, error)
-	LocksIdCurrentStateGet(string, string) (interface{}, error)
-	LocksIdDelete(string, string) (interface{}, error)
-	LocksIdGet(string, string) (interface{}, error)
-	LocksIdHistoryGet(string, string, string, string) (interface{}, error)
-	LocksIdLastStateGet(string, string) (interface{}, error)
-	LocksIdPut(string, string, Lock) (interface{}, error)
+	BridgeConfigGet() (interface{}, error)
+	BridgeConfigPut(BridgeConfig) (interface{}, error)
+	LocksGet() (interface{}, error)
+	LocksIdConfigGet(string) (interface{}, error)
+	LocksIdCurrentStateGet(string) (interface{}, error)
+	LocksIdDelete(string) (interface{}, error)
+	LocksIdGet(string) (interface{}, error)
+	LocksIdHistoryGet(string, string, string) (interface{}, error)
+	LocksIdLastStateGet(string) (interface{}, error)
+	LocksIdPut(string, Lock) (interface{}, error)
 }
 
 
@@ -67,12 +65,10 @@ type InofficialApiServicer interface {
 // while the service implementation can ignored with the .openapi-generator-ignore file 
 // and updated with the logic required for the API.
 type OfficialApiServicer interface { 
-	AuthGet() (interface{}, error)
-	CallbackAddGet(string, string) (interface{}, error)
-	CallbackListGet(string) (interface{}, error)
-	CallbackRemoveGet(string, string) (interface{}, error)
-	ConfigAuthGet(string, string) (interface{}, error)
-	ListGet(string) (interface{}, error)
-	LockActionGet(string, string, string, string) (interface{}, error)
-	LockStateGet(string, string) (interface{}, error)
+	CallbackAddGet(string) (interface{}, error)
+	CallbackListGet() (interface{}, error)
+	CallbackRemoveGet(string) (interface{}, error)
+	ListGet() (interface{}, error)
+	LockActionGet(string, string, string) (interface{}, error)
+	LockStateGet(string) (interface{}, error)
 }

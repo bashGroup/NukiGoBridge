@@ -73,18 +73,7 @@ func (s *NukiBridgeService) listen() {
 	}
 }
 
-func (s *NukiBridgeService) AuthGet() (interface{}, error) {
-	return &api.Auth{
-		Token:   "test124",
-		Success: true,
-	}, nil
-}
-func (s *NukiBridgeService) ConfigAuthGet(string, string) (interface{}, error) {
-	return &api.SimpleResponse{
-		Success: true,
-	}, nil
-}
-func (s *NukiBridgeService) ListGet(string) (interface{}, error) {
+func (s *NukiBridgeService) ListGet() (interface{}, error) {
 	locks := s.bridge.GetLocks()
 
 	list := make([]api.NukiLock, 0)
@@ -103,7 +92,7 @@ func (s *NukiBridgeService) ListGet(string) (interface{}, error) {
 	}
 	return list, nil
 }
-func (s *NukiBridgeService) LockStateGet(nukiId string, token string) (interface{}, error) {
+func (s *NukiBridgeService) LockStateGet(nukiId string) (interface{}, error) {
 	id, err := strconv.ParseUint(nukiId, 10, 32)
 	if err != nil {
 		return nil, err
@@ -126,7 +115,7 @@ func (s *NukiBridgeService) LockStateGet(nukiId string, token string) (interface
 	}, nil
 }
 
-func (s *NukiBridgeService) LockActionGet(nukiId string, action string, noWait string, token string) (interface{}, error) {
+func (s *NukiBridgeService) LockActionGet(nukiId string, action string, noWait string) (interface{}, error) {
 	id, err := strconv.ParseUint(nukiId, 10, 32)
 	if err != nil {
 		return nil, err
@@ -150,14 +139,14 @@ func (s *NukiBridgeService) LockActionGet(nukiId string, action string, noWait s
 	}, nil
 }
 
-func (s *NukiBridgeService) CallbackAddGet(url string, token string) (interface{}, error) {
+func (s *NukiBridgeService) CallbackAddGet(url string) (interface{}, error) {
 	s.newCallbacks <- url
 	return &api.SimpleResponse{
 		Success: true,
 	}, nil
 }
 
-func (s *NukiBridgeService) CallbackListGet(token string) (interface{}, error) {
+func (s *NukiBridgeService) CallbackListGet() (interface{}, error) {
 	callbacks := api.Callbacks{}
 	for id, url := range s.callbacks {
 		callback := api.Callback{
@@ -169,7 +158,7 @@ func (s *NukiBridgeService) CallbackListGet(token string) (interface{}, error) {
 	return callbacks, nil
 }
 
-func (s *NukiBridgeService) CallbackRemoveGet(nukiId string, token string) (interface{}, error) {
+func (s *NukiBridgeService) CallbackRemoveGet(nukiId string) (interface{}, error) {
 	id, err := strconv.ParseUint(nukiId, 10, 32)
 	if err != nil {
 		return nil, err
@@ -180,7 +169,7 @@ func (s *NukiBridgeService) CallbackRemoveGet(nukiId string, token string) (inte
 	}, nil
 }
 
-func (s *NukiBridgeService) LocksIdCurrentStateGet(id string, token string) (interface{}, error) {
+func (s *NukiBridgeService) LocksIdCurrentStateGet(id string) (interface{}, error) {
 	nukiId, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
@@ -199,7 +188,7 @@ func (s *NukiBridgeService) LocksIdCurrentStateGet(id string, token string) (int
 	return res, nil
 }
 
-func (s *NukiBridgeService) LocksGet(string) (interface{}, error) {
+func (s *NukiBridgeService) LocksGet() (interface{}, error) {
 	locks := make([]api.Lock, 0)
 	for id, l := range s.bridge.GetLocks() {
 		nukiId := fmt.Sprint(id)
@@ -213,7 +202,7 @@ func (s *NukiBridgeService) LocksGet(string) (interface{}, error) {
 	return locks, nil
 }
 
-func (s *NukiBridgeService) LocksIdHistoryGet(id string, token string, offset string, count string) (interface{}, error) {
+func (s *NukiBridgeService) LocksIdHistoryGet(id string, offset string, count string) (interface{}, error) {
 	nukiId, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
@@ -235,7 +224,7 @@ func (s *NukiBridgeService) LocksIdHistoryGet(id string, token string, offset st
 	return lock.RequestLogEntries(uint32(off), uint16(c))
 }
 
-func (s *NukiBridgeService) LocksIdLastStateGet(id string, token string) (interface{}, error) {
+func (s *NukiBridgeService) LocksIdLastStateGet(id string) (interface{}, error) {
 	nukiId, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
@@ -247,7 +236,7 @@ func (s *NukiBridgeService) LocksIdLastStateGet(id string, token string) (interf
 	return lock.lastState, nil
 }
 
-func (s *NukiBridgeService) BridgeConfigGet(token string) (interface{}, error) {
+func (s *NukiBridgeService) BridgeConfigGet() (interface{}, error) {
 	pairingEnabled := new(bool)
 	*pairingEnabled = s.bridge.IsPairingEnabled()
 	return api.BridgeConfig{
@@ -255,7 +244,7 @@ func (s *NukiBridgeService) BridgeConfigGet(token string) (interface{}, error) {
 	}, nil
 }
 
-func (s *NukiBridgeService) BridgeConfigPut(token string, bridgeConfig api.BridgeConfig) (interface{}, error) {
+func (s *NukiBridgeService) BridgeConfigPut(bridgeConfig api.BridgeConfig) (interface{}, error) {
 	if *bridgeConfig.PairingEnabled == true {
 		s.bridge.EnablePairing()
 	} else {
@@ -264,7 +253,7 @@ func (s *NukiBridgeService) BridgeConfigPut(token string, bridgeConfig api.Bridg
 	return nil, nil
 }
 
-func (s *NukiBridgeService) LocksIdConfigGet(id string, token string) (interface{}, error) {
+func (s *NukiBridgeService) LocksIdConfigGet(id string) (interface{}, error) {
 	nukiId, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
@@ -315,7 +304,7 @@ func (s *NukiBridgeService) LocksIdConfigGet(id string, token string) (interface
 }
 
 // LocksIdDelete - Update a linked lock
-func (s *NukiBridgeService) LocksIdDelete(id string, token string) (interface{}, error) {
+func (s *NukiBridgeService) LocksIdDelete(id string) (interface{}, error) {
 	nukiId, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
@@ -326,7 +315,7 @@ func (s *NukiBridgeService) LocksIdDelete(id string, token string) (interface{},
 }
 
 // LocksIdGet - Returns a linked lock
-func (s *NukiBridgeService) LocksIdGet(id string, token string) (interface{}, error) {
+func (s *NukiBridgeService) LocksIdGet(id string) (interface{}, error) {
 	nukiId, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
@@ -344,7 +333,7 @@ func (s *NukiBridgeService) LocksIdGet(id string, token string) (interface{}, er
 }
 
 // LocksIdPut - Update a linked lock
-func (s *NukiBridgeService) LocksIdPut(id string, token string, lock api.Lock) (interface{}, error) {
+func (s *NukiBridgeService) LocksIdPut(id string, lock api.Lock) (interface{}, error) {
 	nukiId, err := strconv.ParseUint(id, 10, 32)
 	if err != nil {
 		return nil, err
