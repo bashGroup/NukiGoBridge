@@ -31,7 +31,7 @@ jobs:
       - name: Docker Login
         if: success()
         env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         run: |
           echo "${DOCKERHUB_PASSWORD}" | docker login --username "${{ secrets.DOCKERHUB_USER }}" --password-stdin
       - name: Run buildx
