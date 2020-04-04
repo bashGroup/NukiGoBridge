@@ -1,5 +1,10 @@
 # NukiGoBridge - A nuki bridge implemented in golang
 
+## Support me
+
+- Buy me a coffee: https://www.paypal.me/JochenScheib
+- Buy me a present: https://www.amazon.de/hz/wishlist/ls/2ORJGSSLEQDED?ref_=wl_share
+
 ## Usage
 
  ### Docker
@@ -51,7 +56,7 @@ The api documentation can be viewed and tested after the bridge runs under `http
 
 ### ToDo
 
-- [ ] Automated builds
+- [x] Automated builds
 - [ ] Better api access using jwt token
 - [ ] Extend api by more functionality
 - [ ] Support nuki opener (needs sponsoring)
