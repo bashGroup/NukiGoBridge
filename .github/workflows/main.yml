@@ -28,10 +28,12 @@ jobs:
           version: latest
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
-      - uses: azure/docker-login@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Docker Login
+        if: success()
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        run: |
+          echo "${DOCKERHUB_PASSWORD}" | docker login --username "${{ secrets.DOCKERHUB_USER }}" --password-stdin
       - name: Run buildx
         run: |
           docker buildx build \
