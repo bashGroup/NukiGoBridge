@@ -19,6 +19,7 @@ import (
 	"github.com/go-ble/ble/linux"
 	"github.com/mapero/nuki-bridge/pkg/nukibridge/api"
 	"github.com/mapero/nuki-bridge/pkg/nukibridge/assets/templates"
+	"github.com/mapero/nuki-bridge/pkg/nukibridge/models"
 )
 
 var (
@@ -206,7 +207,7 @@ func (b *bridge) startAdvertisingMonitor() {
 				lock.Disconnect()
 				b.releaseDevice()
 				log.WithField("state", fmt.Sprintf("%+v", state)).WithField("nukiID", beacon.NukiID).Debugln("Received state")
-				b.service.Notifier <- api.CallbackObject{
+				b.service.callbackNotifier <- api.CallbackObject{
 					DeviceType:      0x02,
 					BatteryCritical: state.CriticalBatteryState,
 					Mode:            int32(state.NukiState),
@@ -214,7 +215,17 @@ func (b *bridge) startAdvertisingMonitor() {
 					State:           int32(state.LockState),
 					StateName:       state.LockState.String(),
 				}
-
+				data := struct {
+					models.KeyturnerStates
+					NukiId uint32
+				}{
+					state,
+					beacon.NukiID,
+				}
+				b.service.sseNotifier <- SseEvent{
+					Event: "state",
+					Data:  data,
+				}
 			}
 		default:
 			log.Debugln("Skipping advertisment")
@@ -249,8 +260,9 @@ func (b *bridge) startAPIService() {
 	b.service = NewBridgeService(b)
 	inofficialController := api.NewInofficialApiController(b.service)
 	officialController := api.NewOfficialApiController(b.service)
+	eventsController := api.NewEventsApiController(b.service)
 
-	apiRouter := api.NewRouter(inofficialController, officialController)
+	apiRouter := api.NewRouter(inofficialController, officialController, eventsController)
 	apiRouter.Use(mux.CORSMethodMiddleware(apiRouter))
 	apiRouter.Use(validateToken)
 
@@ -264,6 +276,7 @@ func (b *bridge) startAPIService() {
 	router.PathPrefix("/callback").Handler(apiRouter)
 	router.PathPrefix("/locks").Handler(apiRouter)
 	router.PathPrefix("/bridge").Handler(apiRouter)
+	router.PathPrefix("/events").Handler(apiRouter)
 	router.PathPrefix("/").Handler(fileServer)
 
 	log.WithField("port", b.port).Infoln("serving web services")

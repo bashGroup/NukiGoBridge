@@ -231,6 +231,31 @@ paths:
       responses:
         204:
           description: Success
+  /events:
+    get:
+      tags:
+        - events
+      summary: Receive server-sent events from bridge
+      responses:
+        200:
+          description: server-sent event stream
+          content:
+            text/event-stream:
+              schema:
+                type: array
+                format: chunked
+                items:
+                  type: object
+                  format: text
+                  properties:
+                    event:
+                      type: string
+                    data:
+                      type: object
+                      format: json
+                example: |
+                      event: state
+                      data: {}
 components:
   securitySchemes:
     TokenAuth:

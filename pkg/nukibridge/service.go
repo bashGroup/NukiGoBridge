@@ -12,21 +12,36 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type SseEvent struct {
+	Event string
+	Data  interface{}
+}
+
 type NukiBridgeService struct {
-	bridge            *bridge
-	Notifier          chan api.CallbackObject
+	bridge *bridge
+
+	callbackNotifier  chan api.CallbackObject
 	newCallbacks      chan string
 	removingCallbacks chan int
 	callbacks         map[int]string
+
+	sseNotifier       chan SseEvent
+	newSseClients     chan chan SseEvent
+	closingSseClients chan chan SseEvent
+	sseClients        map[chan SseEvent]bool
 }
 
 func NewBridgeService(bridge *bridge) *NukiBridgeService {
 	s := &NukiBridgeService{
 		bridge:            bridge,
-		Notifier:          make(chan api.CallbackObject, 1),
+		callbackNotifier:  make(chan api.CallbackObject, 1),
 		newCallbacks:      make(chan string),
 		removingCallbacks: make(chan int),
 		callbacks:         make(map[int]string),
+		sseNotifier:       make(chan SseEvent, 1),
+		newSseClients:     make(chan chan SseEvent),
+		closingSseClients: make(chan chan SseEvent),
+		sseClients:        make(map[chan SseEvent]bool),
 	}
 	go s.listen()
 
@@ -36,6 +51,7 @@ func NewBridgeService(bridge *bridge) *NukiBridgeService {
 func (s *NukiBridgeService) listen() {
 	for {
 		select {
+
 		case url := <-s.newCallbacks:
 
 			// A new client has connected.
@@ -49,13 +65,14 @@ func (s *NukiBridgeService) listen() {
 			}
 			s.callbacks[i] = url
 			log.WithField("count", len(s.callbacks)).Infoln("Callback added")
-		case id := <-s.removingCallbacks:
 
+		case id := <-s.removingCallbacks:
 			// A client has dettached and we want to
 			// stop sending them messages.
 			delete(s.callbacks, id)
 			log.WithField("count", len(s.callbacks)).Infoln("Callback removed")
-		case event := <-s.Notifier:
+
+		case event := <-s.callbackNotifier:
 			// We got a new event from the outside!
 			// Send event to all connected clients
 			body, err := json.Marshal(event)
@@ -69,7 +86,21 @@ func (s *NukiBridgeService) listen() {
 					log.WithError(err).Errorln("Failed to send callback event")
 				}
 			}
+
+		case c := <-s.newSseClients:
+			s.sseClients[c] = true
+			log.WithField("count", len(s.sseClients)).Infoln("SSE client added")
+
+		case c := <-s.closingSseClients:
+			delete(s.sseClients, c)
+			log.WithField("count", len(s.sseClients)).Infoln("SSE client removed")
+
+		case event := <-s.sseNotifier:
+			for ch, _ := range s.sseClients {
+				ch <- event
+			}
 		}
+
 	}
 }
 
@@ -345,4 +376,59 @@ func (s *NukiBridgeService) LocksIdPut(id string, lock api.Lock) (interface{}, e
 	l.adminPIN = uint(*lock.Pin)
 	s.bridge.saveConfig()
 	return nil, nil
+}
+
+func (s *NukiBridgeService) EventsGet(w http.ResponseWriter, r *http.Request) {
+	// Make sure that the writer supports flushing.
+	//
+	flusher, ok := w.(http.Flusher)
+
+	if !ok {
+		http.Error(w, "Streaming unsupported!", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/event-stream")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Connection", "keep-alive")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	// Each connection registers its own message channel with the Broker's connections registry
+	messageChan := make(chan SseEvent)
+
+	// Signal the broker that we have a new connection
+	s.newSseClients <- messageChan
+
+	// Remove this client from the map of connected clients
+	// when this handler exits.
+	defer func() {
+		s.closingSseClients <- messageChan
+	}()
+
+	// Listen to connection close and un-register messageChan
+	// notify := rw.(http.CloseNotifier).CloseNotify()
+	notify := r.Context().Done()
+
+	go func() {
+		<-notify
+		s.closingSseClients <- messageChan
+	}()
+
+	for {
+
+		// Write to the ResponseWriter
+		// Server Sent Events compatible
+		event := <-messageChan
+		data, err := json.Marshal(event.Data)
+		if err != nil {
+			log.WithError(err).Warnln("Failed to json marshal sse event")
+			continue
+		}
+		fmt.Fprintf(w, "event: %s\n", event.Event)
+		fmt.Fprintf(w, "data: %s\n\n", data)
+
+		// Flush the data immediatly instead of buffering it for later.
+		flusher.Flush()
+	}
+	return
 }

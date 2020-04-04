@@ -21,12 +21,12 @@ type OfficialApiController struct {
 
 // NewOfficialApiController creates a default api controller
 func NewOfficialApiController(s OfficialApiServicer) Router {
-	return &OfficialApiController{ service: s }
+	return &OfficialApiController{service: s}
 }
 
 // Routes returns all of the api route for the OfficialApiController
 func (c *OfficialApiController) Routes() Routes {
-	return Routes{ 
+	return Routes{
 		{
 			"CallbackAddGet",
 			strings.ToUpper("Get"),
@@ -67,7 +67,7 @@ func (c *OfficialApiController) Routes() Routes {
 }
 
 // CallbackAddGet - Registers a new callback url
-func (c *OfficialApiController) CallbackAddGet(w http.ResponseWriter, r *http.Request) { 
+func (c *OfficialApiController) CallbackAddGet(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	url := query.Get("url")
 	result, err := c.service.CallbackAddGet(url)
@@ -75,23 +75,23 @@ func (c *OfficialApiController) CallbackAddGet(w http.ResponseWriter, r *http.Re
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }
 
 // CallbackListGet - Returns all registered url callbacks
-func (c *OfficialApiController) CallbackListGet(w http.ResponseWriter, r *http.Request) { 
+func (c *OfficialApiController) CallbackListGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.CallbackListGet()
 	if err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }
 
 // CallbackRemoveGet - Removes a previously added callback
-func (c *OfficialApiController) CallbackRemoveGet(w http.ResponseWriter, r *http.Request) { 
+func (c *OfficialApiController) CallbackRemoveGet(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	id := query.Get("id")
 	result, err := c.service.CallbackRemoveGet(id)
@@ -99,23 +99,23 @@ func (c *OfficialApiController) CallbackRemoveGet(w http.ResponseWriter, r *http
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }
 
-// ListGet - 
-func (c *OfficialApiController) ListGet(w http.ResponseWriter, r *http.Request) { 
+// ListGet -
+func (c *OfficialApiController) ListGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ListGet()
 	if err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }
 
 // LockActionGet - Performs a lock operation on the given Smart Lock
-func (c *OfficialApiController) LockActionGet(w http.ResponseWriter, r *http.Request) { 
+func (c *OfficialApiController) LockActionGet(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	nukiId := query.Get("nukiId")
 	action := query.Get("action")
@@ -125,12 +125,12 @@ func (c *OfficialApiController) LockActionGet(w http.ResponseWriter, r *http.Req
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }
 
-// LockStateGet - 
-func (c *OfficialApiController) LockStateGet(w http.ResponseWriter, r *http.Request) { 
+// LockStateGet -
+func (c *OfficialApiController) LockStateGet(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	nukiId := query.Get("nukiId")
 	result, err := c.service.LockStateGet(nukiId)
@@ -138,6 +138,6 @@ func (c *OfficialApiController) LockStateGet(w http.ResponseWriter, r *http.Requ
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	EncodeJSONResponse(result, nil, w)
 }

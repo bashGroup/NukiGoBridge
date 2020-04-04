@@ -13,11 +13,17 @@ import (
 	"net/http"
 )
 
+// EventsApiRouter defines the required methods for binding the api requests to a responses for the EventsApi
+// The EventsApiRouter implementation should parse necessary information from the http request,
+// pass the data to a EventsApiServicer to perform the required actions, then write the service results to the http response.
+type EventsApiRouter interface {
+	EventsGet(http.ResponseWriter, *http.Request)
+}
 
 // InofficialApiRouter defines the required methods for binding the api requests to a responses for the InofficialApi
-// The InofficialApiRouter implementation should parse necessary information from the http request, 
+// The InofficialApiRouter implementation should parse necessary information from the http request,
 // pass the data to a InofficialApiServicer to perform the required actions, then write the service results to the http response.
-type InofficialApiRouter interface { 
+type InofficialApiRouter interface {
 	BridgeConfigGet(http.ResponseWriter, *http.Request)
 	BridgeConfigPut(http.ResponseWriter, *http.Request)
 	LocksGet(http.ResponseWriter, *http.Request)
@@ -29,10 +35,11 @@ type InofficialApiRouter interface {
 	LocksIdLastStateGet(http.ResponseWriter, *http.Request)
 	LocksIdPut(http.ResponseWriter, *http.Request)
 }
+
 // OfficialApiRouter defines the required methods for binding the api requests to a responses for the OfficialApi
-// The OfficialApiRouter implementation should parse necessary information from the http request, 
+// The OfficialApiRouter implementation should parse necessary information from the http request,
 // pass the data to a OfficialApiServicer to perform the required actions, then write the service results to the http response.
-type OfficialApiRouter interface { 
+type OfficialApiRouter interface {
 	CallbackAddGet(http.ResponseWriter, *http.Request)
 	CallbackListGet(http.ResponseWriter, *http.Request)
 	CallbackRemoveGet(http.ResponseWriter, *http.Request)
@@ -41,12 +48,19 @@ type OfficialApiRouter interface {
 	LockStateGet(http.ResponseWriter, *http.Request)
 }
 
+// EventsApiServicer defines the api actions for the EventsApi service
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can ignored with the .openapi-generator-ignore file
+// and updated with the logic required for the API.
+type EventsApiServicer interface {
+	EventsGet(http.ResponseWriter, *http.Request)
+}
 
 // InofficialApiServicer defines the api actions for the InofficialApi service
-// This interface intended to stay up to date with the openapi yaml used to generate it, 
-// while the service implementation can ignored with the .openapi-generator-ignore file 
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can ignored with the .openapi-generator-ignore file
 // and updated with the logic required for the API.
-type InofficialApiServicer interface { 
+type InofficialApiServicer interface {
 	BridgeConfigGet() (interface{}, error)
 	BridgeConfigPut(BridgeConfig) (interface{}, error)
 	LocksGet() (interface{}, error)
@@ -59,12 +73,11 @@ type InofficialApiServicer interface {
 	LocksIdPut(string, Lock) (interface{}, error)
 }
 
-
 // OfficialApiServicer defines the api actions for the OfficialApi service
-// This interface intended to stay up to date with the openapi yaml used to generate it, 
-// while the service implementation can ignored with the .openapi-generator-ignore file 
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can ignored with the .openapi-generator-ignore file
 // and updated with the logic required for the API.
-type OfficialApiServicer interface { 
+type OfficialApiServicer interface {
 	CallbackAddGet(string) (interface{}, error)
 	CallbackListGet() (interface{}, error)
 	CallbackRemoveGet(string) (interface{}, error)

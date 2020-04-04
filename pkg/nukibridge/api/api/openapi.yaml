@@ -323,6 +323,24 @@ paths:
       summary: Update the current bridge configuration
       tags:
       - inofficial
+  /events:
+    get:
+      responses:
+        "200":
+          content:
+            text/event-stream:
+              schema:
+                example: |
+                  event: state
+                  data: {}
+                format: chunked
+                items:
+                  $ref: '#/components/schemas/inline_response_200'
+                type: array
+          description: server-sent event stream
+      summary: Receive server-sent events from bridge
+      tags:
+      - events
 components:
   parameters:
     idPath:
@@ -746,6 +764,13 @@ components:
           nullable: true
           type: boolean
       type: object
+    inline_response_200:
+      properties:
+        event:
+          type: string
+        data:
+          format: json
+          type: object
     Info_ids:
       properties:
         hardwareId:
