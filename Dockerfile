@@ -1,4 +1,4 @@
-FROM golang:1.14
+FROM --platform=$BUILDPLATFORM golang:1.14
 
 # Build and install
 WORKDIR /go/src/nukibridge
