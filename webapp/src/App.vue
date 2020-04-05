@@ -64,10 +64,18 @@
         </v-list-item>
         <v-list-item link>
           <v-list-item-action>
-            <v-icon>mdi-help</v-icon>
+            <v-icon>mdi-code-tags</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Help</v-list-item-title>
+            <v-list-item-title>API References</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-github</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Github</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
