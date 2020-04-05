@@ -41,7 +41,7 @@ jobs:
           docker buildx build \
           --platform linux/amd64,linux/arm64,linux/arm/v7 \
           -t bashgroup/nukigobridge:latest \
-          -t bashgroup/nukigobridge:${{ VERSION }}
+          -t bashgroup/nukigobridge:${{ steps.get_version.outputs.VERSION }} \
           --output "type=image,push=true" \
           --file Dockerfile .
       - name: Clear
