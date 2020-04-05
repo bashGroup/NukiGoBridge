@@ -3,6 +3,7 @@ FROM golang:1.14
 # Build and install
 WORKDIR /go/src/nukibridge
 COPY . .
+RUN go generate ./...
 RUN go get -d -v ./cmd/nukibridge
 RUN go install -v ./cmd/nukibridge
 RUN rm -rf /go/src /go/pkg
