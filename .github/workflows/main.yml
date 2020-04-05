@@ -33,11 +33,15 @@ jobs:
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         run: |
           echo "${DOCKERHUB_PASSWORD}" | docker login --username "${{ secrets.DOCKERHUB_USER }}" --password-stdin
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Run buildx
         run: |
           docker buildx build \
           --platform linux/amd64,linux/arm64,linux/arm/v7 \
           -t bashgroup/nukigobridge:latest \
+          -t bashgroup/nukigobridge:${{ VERSION }}
           --output "type=image,push=true" \
           --file Dockerfile .
       - name: Clear
