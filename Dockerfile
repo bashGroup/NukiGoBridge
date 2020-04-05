@@ -1,7 +1,15 @@
+# Build vue app
+FROM node:11-alpine as build-vue
+WORKDIR /app
+COPY webapp/ /app/
+RUN yarn install
+RUN yarn build
+
 # Build stage
 FROM golang:1.14 as build-golang
 WORKDIR /go/src/nukibridge
 COPY . .
+COPY --from=build-vue /app/dist/ ./assets/
 RUN go generate ./...
 RUN CGO_ENABLED=0 go build -v ./cmd/nukibridge
 
