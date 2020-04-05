@@ -1,8 +1,10 @@
 # Build vue app
-FROM node:11-alpine as build-vue
+FROM node:11-alpine as develop-vue
 WORKDIR /app
 COPY webapp/ /app/
 RUN yarn install
+
+FROM develop-vue as build-vue
 RUN yarn build
 
 # Build stage

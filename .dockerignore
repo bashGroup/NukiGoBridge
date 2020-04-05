@@ -4,3 +4,4 @@ Dockerfile
 monitor
 nukibridge
 scanner
+**/node_modules
