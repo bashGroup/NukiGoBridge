@@ -30,7 +30,7 @@ func (c *EventsApiController) Routes() Routes {
 		{
 			"EventsGet",
 			strings.ToUpper("Get"),
-			"/events",
+			"/api/v1/events",
 			c.EventsGet,
 		},
 	}

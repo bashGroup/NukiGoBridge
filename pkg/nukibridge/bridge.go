@@ -257,6 +257,11 @@ func (b *bridge) startAPIService() {
 		})
 	}
 
+	rewrite := func(w http.ResponseWriter, r *http.Request) {
+		r.URL.Path = fmt.Sprintf("%s%s", "/api/v1", r.URL.Path)
+		router.ServeHTTP(w, r)
+	}
+
 	b.service = NewBridgeService(b)
 	inofficialController := api.NewInofficialApiController(b.service)
 	officialController := api.NewOfficialApiController(b.service)
@@ -268,15 +273,12 @@ func (b *bridge) startAPIService() {
 
 	fileServer := http.FileServer(templates.Assets)
 
-	router.PathPrefix("/auth").Handler(apiRouter)
-	router.PathPrefix("/configAuth").Handler(apiRouter)
-	router.PathPrefix("/list").Handler(apiRouter)
-	router.PathPrefix("/lockState").Handler(apiRouter)
-	router.PathPrefix("/lockAction").Handler(apiRouter)
-	router.PathPrefix("/callback").Handler(apiRouter)
-	router.PathPrefix("/locks").Handler(apiRouter)
-	router.PathPrefix("/bridge").Handler(apiRouter)
-	router.PathPrefix("/events").Handler(apiRouter)
+	router.PathPrefix("/list").HandlerFunc(rewrite)
+	router.PathPrefix("/lockState").HandlerFunc(rewrite)
+	router.PathPrefix("/lockAction").HandlerFunc(rewrite)
+	router.PathPrefix("/callback").HandlerFunc(rewrite)
+
+	router.PathPrefix("/api/v1/").Handler(apiRouter)
 	router.PathPrefix("/").Handler(fileServer)
 
 	log.WithField("port", b.port).Infoln("serving web services")

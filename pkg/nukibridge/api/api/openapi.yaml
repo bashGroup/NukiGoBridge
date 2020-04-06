@@ -4,7 +4,7 @@ info:
   title: Keyturner api
   version: 1.0.0
 servers:
-- url: /
+- url: /api/v1/
 security:
 - TokenAuth: []
 tags:

@@ -30,37 +30,37 @@ func (c *OfficialApiController) Routes() Routes {
 		{
 			"CallbackAddGet",
 			strings.ToUpper("Get"),
-			"/callback/add",
+			"/api/v1/callback/add",
 			c.CallbackAddGet,
 		},
 		{
 			"CallbackListGet",
 			strings.ToUpper("Get"),
-			"/callback/list",
+			"/api/v1/callback/list",
 			c.CallbackListGet,
 		},
 		{
 			"CallbackRemoveGet",
 			strings.ToUpper("Get"),
-			"/callback/remove",
+			"/api/v1/callback/remove",
 			c.CallbackRemoveGet,
 		},
 		{
 			"ListGet",
 			strings.ToUpper("Get"),
-			"/list",
+			"/api/v1/list",
 			c.ListGet,
 		},
 		{
 			"LockActionGet",
 			strings.ToUpper("Get"),
-			"/lockAction",
+			"/api/v1/lockAction",
 			c.LockActionGet,
 		},
 		{
 			"LockStateGet",
 			strings.ToUpper("Get"),
-			"/lockState",
+			"/api/v1/lockState",
 			c.LockStateGet,
 		},
 	}

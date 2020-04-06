@@ -4,7 +4,7 @@ info:
   version: "1.0.0"
   title: "Keyturner api"
 servers: 
-- url: /
+- url: /api/v1/
 tags:
   - name: official
     description: The official api of the nuki bridge
