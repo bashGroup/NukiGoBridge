@@ -10,6 +10,8 @@
 package api
 
 import (
+	"strings"
+
 	log "github.com/sirupsen/logrus"
 
 	"net/http"
@@ -21,7 +23,14 @@ func Logger(inner http.Handler, name string) http.Handler {
 		start := time.Now()
 
 		inner.ServeHTTP(w, r)
+		uri := r.RequestURI
+		tokens, ok := r.URL.Query()["token"]
+		if ok {
+			for _, token := range tokens {
+				uri = strings.ReplaceAll(uri, token, "***")
+			}
+		}
 
-		log.WithField("method", r.Method).WithField("uri", r.RequestURI).WithField("rtt", time.Since(start)).Infoln("API request")
+		log.WithField("method", r.Method).WithField("uri", uri).WithField("rtt", time.Since(start)).Infoln("API request")
 	})
 }
